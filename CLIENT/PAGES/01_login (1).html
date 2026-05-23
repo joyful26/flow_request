@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion — UniRequest Ngaoundéré</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+
+    /* ==== RESET ==== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ==== COULEURS ==== */
+    :root {
+      --vert:      #1e6b2e;
+      --vert-med:  #2e7d32;
+      --vert-clair:#4caf50;
+      --jaune:     #f5c518;
+      --blanc:     #ffffff;
+      --fond:      #f2f7f2;
+      --gris:      #64748b;
+      --bordure:   #c8d8c8;
+    }
+
+    /* ==== BODY : deux colonnes ==== */
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ============================================================
+       PANNEAU GAUCHE — formulaire
+    ============================================================ */
+    .left {
+      width: 460px;
+      min-width: 340px;
+      background: var(--blanc);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 44px;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+      z-index: 2;
+    }
+
+    /* Logo */
+    .logo-wrap { text-align: center; margin-bottom: 28px; }
+    .logo-svg  { width: 80px; height: 80px; display: block; margin: 0 auto 10px; }
+    .logo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--vert);
+      line-height: 1.4;
+    }
+    .logo-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--gris);
+      margin-top: 3px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Titre */
+    .ftitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--vert);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .fsub {
+      font-size: 13px;
+      color: var(--gris);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* Boîte erreur */
+    .err-box {
+      display: none;
+      background: #fff5f5;
+      border: 1.5px solid #fed7d7;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #c53030;
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    /* Champs */
+    .fgroup { margin-bottom: 16px; width: 100%; }
+    .flabel {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--vert);
+      margin-bottom: 5px;
+    }
+    .finput {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.8px solid var(--bordure);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: #1a202c;
+      background: var(--fond);
+      outline: none;
+      transition: border-color .2s, background .2s;
+    }
+    .finput:focus { border-color: var(--vert-med); background: var(--blanc); }
+
+    /* Bouton */
+    .btn-go {
+      width: 100%;
+      padding: 13px;
+      background: var(--vert-med);
+      color: var(--blanc);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      margin-top: 6px;
+    }
+    .btn-go:hover   { background: var(--vert); transform: translateY(-1px); }
+    .btn-go:active  { transform: translateY(0); }
+    .btn-go:disabled{ background: #a0aec0; cursor: not-allowed; transform: none; }
+
+    /* Barre déco */
+    .bar {
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(to right, var(--vert), var(--jaune), var(--vert-clair));
+      border-radius: 2px;
+      margin-top: 28px;
+    }
+
+    /* Lien inscription */
+    .reg-link { text-align: center; font-size: 13px; color: var(--gris); margin-top: 18px; }
+    .reg-link a { color: var(--vert-med); font-weight: 600; text-decoration: none; }
+    .reg-link a:hover { text-decoration: underline; }
+
+    /* ==== Astuce identifiants de test ==== */
+    .hint-box {
+      width: 100%;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #166534;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       PANNEAU DROIT — image campus aérienne
+    ============================================================ */
+    .right {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Image aérienne de Ngaoundéré (vue haute) */
+    .bg-img {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/34/Ngaoundere-Adamawa.jpg');
+      background-size: cover;
+      background-position: center top;
+      filter: blur(3px) brightness(0.7);
+      transform: scale(1.06);
+    }
+
+    /* Dégradé vert + jaune par-dessus */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        140deg,
+        rgba(30,107,46,.70) 0%,
+        rgba(46,125,50,.50) 55%,
+        rgba(245,197,24,.35) 100%
+      );
+    }
+
+    /* Contenu sur l'image */
+    .right-content {
+      position: relative;
+      z-index: 3;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 40px;
+      text-align: center;
+    }
+
+    /* Logo TRÈS CLAIR sur l'image */
+    .logo-big { width: 130px; height: 130px; margin-bottom: 26px; filter: drop-shadow(0 6px 24px rgba(0,0,0,.5)); }
+    .logo-big svg { width: 100%; height: 100%; }
+
+    .r-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      color: var(--blanc);
+      margin-bottom: 14px;
+      line-height: 1.25;
+      text-shadow: 0 2px 12px rgba(0,0,0,.5);
+    }
+    .r-title span { color: var(--jaune); }
+
+    .r-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,.88);
+      max-width: 360px;
+      line-height: 1.65;
+      text-shadow: 0 1px 6px rgba(0,0,0,.4);
+    }
+
+    .r-badge {
+      margin-top: 32px;
+      background: var(--jaune);
+      color: var(--vert);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 26px;
+      border-radius: 30px;
+      letter-spacing: .5px;
+    }
+
+    /* Responsive */
+    @media(max-width:768px){
+      body { flex-direction: column; }
+      .left { width:100%; min-width:unset; padding:40px 24px; }
+      .right { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== GAUCHE : FORMULAIRE ===== -->
+<div class="left">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" fill="#1e6b2e"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#f5c518" stroke-width="2"/>
+      <rect x="28" y="43" width="20" height="14" rx="2" fill="white" opacity=".95"/>
+      <rect x="52" y="43" width="20" height="14" rx="2" fill="white" opacity=".95"/>
+      <line x1="50" y1="43" x2="50" y2="57" stroke="#f5c518" stroke-width="2.2"/>
+      <path d="M30 43 Q50 31 70 43" fill="none" stroke="#f5c518" stroke-width="2.2"/>
+      <ellipse cx="50" cy="27" rx="4" ry="7" fill="#f5c518"/>
+      <ellipse cx="50" cy="25" rx="2.3" ry="4.5" fill="white" opacity=".6"/>
+      <text x="50" y="75" text-anchor="middle" font-family="serif" font-size="8" fill="#f5c518" font-weight="bold">U. Ngaoundéré</text>
+      <text x="50" y="85" text-anchor="middle" font-family="sans-serif" font-size="6" fill="white" opacity=".8">est. 1993</text>
+    </svg>
+    <div class="logo-name">Université de Ngaoundéré</div>
+    <div class="logo-sub">Gestion des requêtes académiques</div>
+  </div>
+
+  <h1 class="ftitle">Connexion Étudiant</h1>
+  <p class="fsub">Tous les champs sont obligatoires</p>
+
+  <!-- Astuce de test -->
+  <div class="hint-box">
+    🔑 <strong>Compte de test :</strong><br/>
+    Matricule : <code>21A042UN</code> &nbsp;|&nbsp;
+    Email : <code>jean@univ-ndere.cm</code> &nbsp;|&nbsp;
+    Mot de passe : <code>etudiant123</code>
+  </div>
+
+  <!-- Erreur -->
+  <div class="err-box" id="errBox">⚠️ Identifiants incorrects. Vérifiez vos informations.</div>
+
+  <!-- Formulaire -->
+  <div class="fgroup">
+    <label class="flabel" for="mat">Matricule étudiant *</label>
+    <input class="finput" type="text" id="mat" placeholder="Ex : 21A042UN" required/>
+  </div>
+
+  <div class="fgroup">
+    <label class="flabel" for="eml">Adresse e-mail *</label>
+    <input class="finput" type="email" id="eml" placeholder="prenom@univ-ndere.cm" required/>
+  </div>
+
+  <div class="fgroup">
+    <label class="flabel" for="pwd">Mot de passe *</label>
+    <input class="finput" type="password" id="pwd" placeholder="••••••••" required/>
+  </div>
+
+  <button class="btn-go" id="btnLogin" disabled onclick="doLogin()">Se connecter</button>
+
+  <div class="bar"></div>
+
+  <p class="reg-link">Pas encore de compte ? <a href="02_register.html">S'inscrire ici</a></p>
+</div>
+
+<!-- ===== DROITE : CAMPUS ===== -->
+<div class="right">
+  <div class="bg-img"></div>
+  <div class="overlay"></div>
+  <div class="right-content">
+
+    <!-- Logo clair sur l'image -->
+    <div class="logo-big">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="rgba(255,255,255,0.10)" stroke="white" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+        <rect x="28" y="43" width="20" height="14" rx="2" fill="white"/>
+        <rect x="52" y="43" width="20" height="14" rx="2" fill="white"/>
+        <line x1="50" y1="43" x2="50" y2="57" stroke="#f5c518" stroke-width="2.5"/>
+        <path d="M30 43 Q50 31 70 43" fill="none" stroke="#f5c518" stroke-width="2.5"/>
+        <ellipse cx="50" cy="27" rx="4" ry="7" fill="#f5c518"/>
+        <ellipse cx="50" cy="25" rx="2.3" ry="4.5" fill="white" opacity=".7"/>
+        <text x="50" y="75" text-anchor="middle" font-family="serif" font-size="8" fill="#f5c518" font-weight="bold">U. Ngaoundéré</text>
+        <text x="50" y="85" text-anchor="middle" font-family="sans-serif" font-size="6" fill="white" opacity=".9">est. 1993</text>
+      </svg>
+    </div>
+
+    <h2 class="r-title">Bienvenue à<br/><span>l'Université de Ngaoundéré</span></h2>
+    <p class="r-sub">Gérez vos demandes de documents académiques simplement, en quelques clics, depuis n'importe où.</p>
+    <div class="r-badge">🎓 UniRequest — Plateforme Étudiante</div>
+  </div>
+</div>
+
+<script>
+  const mat = document.getElementById('mat');
+  const eml = document.getElementById('eml');
+  const pwd = document.getElementById('pwd');
+  const btn = document.getElementById('btnLogin');
+  const err = document.getElementById('errBox');
+
+  // Compte étudiant de test
+  const COMPTE = { mat:'21A042UN', email:'jean@univ-ndere.cm', pwd:'etudiant123' };
+
+  function check(){
+    btn.disabled = !(mat.value.trim() && eml.value.trim() && pwd.value.trim());
+  }
+  mat.addEventListener('input', check);
+  eml.addEventListener('input', check);
+  pwd.addEventListener('input', check);
+
+  function doLogin(){
+    err.style.display = 'none';
+    if(mat.value.trim()===COMPTE.mat && eml.value.trim()===COMPTE.email && pwd.value.trim()===COMPTE.pwd){
+      window.location.href = '03_dashboard.html';
+    } else {
+      err.style.display = 'block';
+      pwd.value = '';
+      check();
+    }
+  }
+  document.addEventListener('keypress', e => { if(e.key==='Enter' && !btn.disabled) doLogin(); });
+</script>
+</body>
+</html>
